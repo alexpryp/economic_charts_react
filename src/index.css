@@ -17,3 +17,44 @@ code {
 #chartdiv {
   height: 600px;
 }
+
+.year-button {
+  padding: 15px 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  font-size: 20px;
+  overflow: hidden;
+  transition: 0.2s;
+  margin: 10px;
+  background-color: #222;
+}
+.year2017 {
+  color: #ff0000;
+  border: 2px solid #ff0000;
+}
+.year2017:hover {
+  color: #000;
+  background: #ff0000;
+  box-shadow: 0 0 10px #ff0000, 0 0 40px #ff0000, 0 0 80px #ff0000;
+}
+
+.year2018 {
+  color: #00ff00;
+  border: 2px solid #00ff00;
+}
+.year2018:hover {
+  color: #000;
+  background: #00ff00;
+  box-shadow: 0 0 10px #00ff00, 0 0 40px #00ff00, 0 0 80px #00ff00;
+}
+
+.year2019 {
+  color: #0051ff;
+  border: 2px solid #0051ff;
+}
+.year2019:hover {
+  color: #000;
+  background: #0051ff;
+  box-shadow: 0 0 10px #0051ff, 0 0 40px #0051ff, 0 0 80px #0051ff;
+}

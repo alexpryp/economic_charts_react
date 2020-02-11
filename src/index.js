@@ -11,112 +11,10 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
 const salar2019 = [9223, 9429, 10237, 10269, 10239, 10783, 10971, 10537, 10687, 10727, 10679, 12264];
+const salar2018 = [7711, 7828, 8382, 8480, 8725, 9141, 9170, 8977, 9042, 9218, 9161, 10573];
+const salar2017 = [6008, 6209, 6752, 6659, 6840, 7360, 7339, 7114, 7351, 7377, 7479, 8777];
 
-function SalarTable() {
-    let table = [];
-    let row = "";
-
-    let header = (
-        <tr>
-            <th>{"Месяц"}</th>
-            <th>{"Зарплата грн."}</th>
-        </tr>
-    )
-
-    table.push(header);
-
-    for(let i = 0; i < 12; i++) {
-        row = (
-            <tr>
-                <td>{months[i]}</td>
-                <td>{salar2019[i]}</td>
-            </tr>
-        )
-
-        table.push(row);
-    }
-
-    console.dir(table);
-
-    return <table>{table}</table>;
-}
-
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    
-    render() {
-        return (
-            <div>
-                <header>
-                    <h1>Средняя зарплата и ВВП в Украине</h1>
-                    <h2>Выберите год</h2>
-                </header>
-                <SalarTable />
-            </div>
-        );
-    }
-}
-
-
-/* let data =[{
-    "country": "USA",
-    "visits": 4025
-  }, {
-    "country": "China",
-    "visits": 1882
-  }, {
-    "country": "Japan",
-    "visits": 1809
-  }, {
-    "country": "Germany",
-    "visits": 1322
-  }, {
-    "country": "UK",
-    "visits": 1122
-  }, {
-    "country": "France",
-    "visits": 1114
-  }, {
-    "country": "India",
-    "visits": 984
-  }, {
-    "country": "Spain",
-    "visits": 711
-  }, {
-    "country": "Netherlands",
-    "visits": 665
-  }, {
-    "country": "Russia",
-    "visits": 580
-  }, {
-    "country": "South Korea",
-    "visits": 443
-  }, {
-    "country": "Canada",
-    "visits": 441
-  }, {
-    "country": "Brazil",
-    "visits": 395
-  }, {
-    "country": "Italy",
-    "visits": 386
-  }, {
-    "country": "Australia",
-    "visits": 384
-  }, {
-    "country": "Taiwan",
-    "visits": 338
-  }, {
-    "country": "Poland",
-    "visits": 328
-  }]; */
-
-
-
-  function createDataArray (months, salary) {
+function createDataArray (months, salary) {
     let array = [];
 
     for (let i = 0; i < months.length; i++) {
@@ -129,15 +27,15 @@ class App extends React.Component {
     }
 
     return array;
-  }
+}
 
-  let data = createDataArray(months, salar2019);
+let data = createDataArray(months, salar2019);
 
 
 
 
 /* am4core.ready( */
-    function buildChart(data) {
+function buildChart(data) {
 
     // Themes begin
     am4core.useTheme(am4themes_dark);
@@ -172,7 +70,7 @@ class App extends React.Component {
     series.dataFields.categoryX = "month";
     series.name = "Visits";
     series.tooltipText = "{categoryX}: [bold]{valueY}[/]";
-    series.columns.template.fillOpacity = .8;
+    series.columns.template.fillOpacity = .6;
     
     var columnTemplate = series.columns.template;
     columnTemplate.strokeWidth = 2;
@@ -192,7 +90,74 @@ class App extends React.Component {
     chart.cursor.lineY.strokeOpacity = 0;
 }
 /*     );  */
-buildChart(data);
+
+function SalarTable() {
+    let table = [];
+    let row = "";
+
+    let header = (
+        <tr key={"header"}>
+            <th>{"Месяц"}</th>
+            <th>{"Зарплата грн."}</th>
+        </tr>
+    )
+
+    table.push(header);
+
+    for(let i = 0; i < 12; i++) {
+        row = (
+            <tr key={months[i]}>
+                <td>{months[i]}</td>
+                <td>{salar2019[i]}</td>
+            </tr>
+        )
+
+        table.push(row);
+    }
+
+    return <table><tbody>{table}</tbody></table>;
+}
+
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            "year": 2019,
+        };
+
+        this.changeYear = this.changeYear.bind(this);
+    }
+
+    changeYear(e) {
+        this.setState({
+            "year": e.target.dataset.year,
+          });
+    }
+
+    componentDidMount() {
+        buildChart(data);
+    }
+    
+    render() {
+        return (
+            <div>
+                <header>
+                    <h1>Средняя зарплата и ВВП в Украине</h1>
+                    <h2>Выберите год</h2>
+                    <div>
+                        <div className="year-button year2017" data-year="2017" onClick={this.changeYear}>2017</div>
+                        <div className="year-button year2018" data-year="2018" onClick={this.changeYear}>2018</div>
+                        <div className="year-button year2019" data-year="2019" onClick={this.changeYear}>2019</div>
+                    </div>
+                </header>
+                <SalarTable />
+                <div id="chartdiv"></div>
+            </div>
+        );
+    }
+}
+
+
 
 
 ReactDOM.render(<App />, document.getElementById('root'));
