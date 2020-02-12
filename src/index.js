@@ -29,7 +29,7 @@ function createDataArray (months, salary) {
     return array;
 }
 
-let data = createDataArray(months, salar2019);
+let data = createDataArray(months, salar2017);
 
 
 
@@ -91,9 +91,18 @@ function buildChart(data) {
 }
 /*     );  */
 
-function SalarTable() {
+function SalarTable(props) {
     let table = [];
     let row = "";
+    let salar = salar2017;
+
+    if (props.year === "2017") {
+        salar = salar2017;
+    } else if (props.year === "2018") {
+        salar = salar2018;
+    } else if (props.year === "2019") {
+        salar = salar2019;
+    }
 
     let header = (
         <tr key={"header"}>
@@ -106,14 +115,16 @@ function SalarTable() {
 
     for(let i = 0; i < 12; i++) {
         row = (
-            <tr key={months[i]}>
+            <tr key={salar[i]}>
                 <td>{months[i]}</td>
-                <td>{salar2019[i]}</td>
+                <td>{salar[i]}</td>
             </tr>
         )
 
         table.push(row);
     }
+
+    data = createDataArray(months, salar);
 
     return <table><tbody>{table}</tbody></table>;
 }
@@ -122,7 +133,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            "year": 2019,
+            "year": "2017",
         };
 
         this.changeYear = this.changeYear.bind(this);
@@ -132,9 +143,28 @@ class App extends React.Component {
         this.setState({
             "year": e.target.dataset.year,
           });
+        
+        if (e.target.classList.contains("year2017")) {
+            document.querySelector('.year2017').classList.add('year2017-active');
+            document.querySelector('.year2018').classList.remove('year2018-active');
+            document.querySelector('.year2019').classList.remove('year2019-active');
+        } else if (e.target.classList.contains("year2018")) {
+            document.querySelector('.year2017').classList.remove('year2017-active');
+            document.querySelector('.year2018').classList.add('year2018-active');
+            document.querySelector('.year2019').classList.remove('year2019-active');
+        } else if (e.target.classList.contains("year2019")) {
+            document.querySelector('.year2017').classList.remove('year2017-active');
+            document.querySelector('.year2018').classList.remove('year2018-active');
+            document.querySelector('.year2019').classList.add('year2019-active');
+        }
+       console.dir(e.target);
     }
 
     componentDidMount() {
+        buildChart(data);
+    }
+
+    componentDidUpdate() {
         buildChart(data);
     }
     
@@ -144,14 +174,16 @@ class App extends React.Component {
                 <header>
                     <h1>Средняя зарплата и ВВП в Украине</h1>
                     <h2>Выберите год</h2>
-                    <div>
-                        <div className="year-button year2017" data-year="2017" onClick={this.changeYear}>2017</div>
+                    <div className="year-buttons">
+                        <div className="year-button year2017 year2017-active" data-year="2017" onClick={this.changeYear}>2017</div>
                         <div className="year-button year2018" data-year="2018" onClick={this.changeYear}>2018</div>
                         <div className="year-button year2019" data-year="2019" onClick={this.changeYear}>2019</div>
                     </div>
                 </header>
-                <SalarTable />
-                <div id="chartdiv"></div>
+                <div className="average-salary">
+                    <SalarTable year={this.state.year} />
+                    <div id="chartdiv"></div>
+                </div>
             </div>
         );
     }
