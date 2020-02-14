@@ -10,9 +10,14 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
 
 const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+const quarters = ["I кв.", "II кв.", "III кв.", "IV кв."];
 const salar2019 = [9223, 9429, 10237, 10269, 10239, 10783, 10971, 10537, 10687, 10727, 10679, 12264];
 const salar2018 = [7711, 7828, 8382, 8480, 8725, 9141, 9170, 8977, 9042, 9218, 9161, 10573];
 const salar2017 = [6008, 6209, 6752, 6659, 6840, 7360, 7339, 7114, 7351, 7377, 7479, 8777];
+const gdp2019 = [807755, 927773, 1105520, 1176822];
+const gdp2018 = [705013, 810820, 994850, 1048023];
+const gdp2017 = [591008, 664760, 833130, 894022];
+
 
 function createDataArray (months, salary) {
     let array = [];
@@ -148,14 +153,20 @@ class App extends React.Component {
             document.querySelector('.year2017').classList.add('year2017-active');
             document.querySelector('.year2018').classList.remove('year2018-active');
             document.querySelector('.year2019').classList.remove('year2019-active');
+            document.querySelector('h1').classList.remove('header-2018', 'header-2019');
+            document.querySelector('h1').classList.add('header-2017');
         } else if (e.target.classList.contains("year2018")) {
             document.querySelector('.year2017').classList.remove('year2017-active');
             document.querySelector('.year2018').classList.add('year2018-active');
             document.querySelector('.year2019').classList.remove('year2019-active');
+            document.querySelector('h1').classList.remove('header-2017', 'header-2019');
+            document.querySelector('h1').classList.add('header-2018');
         } else if (e.target.classList.contains("year2019")) {
             document.querySelector('.year2017').classList.remove('year2017-active');
             document.querySelector('.year2018').classList.remove('year2018-active');
             document.querySelector('.year2019').classList.add('year2019-active');
+            document.querySelector('h1').classList.remove('header-2017', 'header-2018');
+            document.querySelector('h1').classList.add('header-2019');
         }
        console.dir(e.target);
     }
@@ -172,7 +183,7 @@ class App extends React.Component {
         return (
             <div>
                 <header>
-                    <h1>Средняя зарплата и ВВП в Украине</h1>
+                    <h1 className="header-2017">Средняя зарплата и ВВП в Украине</h1>
                     <h2>Выберите год</h2>
                     <div className="year-buttons">
                         <div className="year-button year2017 year2017-active" data-year="2017" onClick={this.changeYear}>2017</div>
@@ -180,9 +191,12 @@ class App extends React.Component {
                         <div className="year-button year2019" data-year="2019" onClick={this.changeYear}>2019</div>
                     </div>
                 </header>
-                <div className="average-salary">
-                    <SalarTable year={this.state.year} />
-                    <div id="chartdiv"></div>
+                <div className="average-salary-container">
+                    <h2>Средняя зарплата в Украине за {this.state.year} год.</h2>
+                    <div className="average-salary">
+                        <SalarTable year={this.state.year} />
+                        <div id="chartdiv"></div>
+                    </div>
                 </div>
             </div>
         );
