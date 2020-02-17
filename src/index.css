@@ -43,7 +43,7 @@ h2 {
   color: #f2ff3c;
 }
 
-#chartdiv {
+#chartdivSalary, #chartdivGDP {
   height: 500px;
   width: 700px;
 }
@@ -98,10 +98,10 @@ h2 {
   box-shadow: 0 0 10px #0051ff, 0 0 40px #0051ff, 0 0 80px #0051ff;
 }
 
-.average-salary-container {
+.average-salary-container, .gdp-container {
   margin: 30px 20px;
 }
-.average-salary {
+.average-salary, .gdp {
   display: flex;
   justify-content: center;
 }

@@ -35,18 +35,23 @@ function createDataArray (periods, values, periodName, valueName) {
 }
 
 let dataSalar = createDataArray(months, salar2017, "month", "salary");
+let dataGdp = createDataArray(quarters, gdp2017, "quarter", "value");
 
 function DataTable(props) {
     let table = [];
     let row = "";
     let salar = salar2017;
+    let gdp = gdp2017;
 
     if (props.year === "2017") {
         salar = salar2017;
+        gdp = gdp2017;
     } else if (props.year === "2018") {
         salar = salar2018;
+        gdp = gdp2018;
     } else if (props.year === "2019") {
         salar = salar2019;
+        gdp = gdp2019;
     }
 
     let header = (
@@ -58,24 +63,38 @@ function DataTable(props) {
 
     table.push(header);
 
-    for(let i = 0; i < 12; i++) {
-        row = (
-            <tr key={salar[i]}>
-                <td>{months[i]}</td>
-                <td>{salar[i]}</td>
-            </tr>
-        )
+    if (props.typeData === "salary") {
+        for(let i = 0; i < 12; i++) {
+            row = (
+                <tr key={salar[i]}>
+                    <td>{months[i]}</td>
+                    <td>{salar[i]}</td>
+                </tr>
+            )
 
-        table.push(row);
+            table.push(row);
+        }
+
+        dataSalar = createDataArray(months, salar, "month", "salary");
+    } else if (props.typeData === "gdp") {
+        for(let i = 0; i < 4; i++) {
+            row = (
+                <tr key={gdp[i]}>
+                    <td>{quarters[i]}</td>
+                    <td>{gdp[i]}</td>
+                </tr>
+            )
+
+            table.push(row);
+        }
+
+        dataGdp = createDataArray(quarters, gdp, "quarter", "value");
     }
-
-    dataSalar = createDataArray(months, salar, "month", "salary");
 
     return <table><tbody>{table}</tbody></table>;
 }
 
 
-/* am4core.ready( */
 function buildSalarChart(data) {
 
     // Themes begin
@@ -84,7 +103,7 @@ function buildSalarChart(data) {
     // Themes end
     
     // Create chart instance
-    var chart = am4core.create("chartdiv", am4charts.XYChart3D);
+    var chart = am4core.create("chartdivSalary", am4charts.XYChart3D);
 
     // Add data
     chart.data = data;
@@ -130,7 +149,56 @@ function buildSalarChart(data) {
     chart.cursor.lineX.strokeOpacity = 0;
     chart.cursor.lineY.strokeOpacity = 0;
 }
-/*     );  */
+
+
+
+
+
+function buildGDPChart(data) {
+
+    // Themes begin
+    am4core.useTheme(am4themes_dark);
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+    
+    // Create chart instance
+    var chart = am4core.create("chartdivGDP", am4charts.XYChart3D);
+    
+    // Add data
+    data = data.map(function(item) {
+        item["color"] = chart.colors.next();
+
+        return item;
+      })
+    
+    chart.data = data;
+    
+    // Create axes
+    var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "quarter";
+    categoryAxis.numberFormatter.numberFormat = "#";
+    categoryAxis.renderer.inversed = true;
+    
+    var  valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+    valueAxis.title.text = "ВВП млн. грн./квартал";
+    
+    // Create series
+    var series = chart.series.push(new am4charts.ColumnSeries3D());
+    series.dataFields.valueX = "value";
+    series.dataFields.categoryY = "quarter";
+    series.name = "Income";
+    series.columns.template.propertyFields.fill = "color";
+    series.columns.template.tooltipText = "{valueX}";
+    series.columns.template.column3D.stroke = am4core.color("#fff");
+    series.columns.template.column3D.strokeOpacity = 0.2;
+    
+};
+
+
+
+
+
+
 
 class App extends React.Component {
     constructor(props) {
@@ -175,10 +243,12 @@ class App extends React.Component {
 
     componentDidMount() {
         buildSalarChart(dataSalar);
+        buildGDPChart(dataGdp);
     }
 
     componentDidUpdate() {
         buildSalarChart(dataSalar);
+        buildGDPChart(dataGdp);
     }
     
     render() {
@@ -196,8 +266,15 @@ class App extends React.Component {
                 <div className="average-salary-container">
                     <h2>Средняя зарплата в Украине за {this.state.year} год.</h2>
                     <div className="average-salary">
-                        <DataTable year={this.state.year} periodName={"Месяц"} valueName={"Зарплата грн./мес."} />
-                        <div id="chartdiv"></div>
+                        <DataTable year={this.state.year} periodName={"Месяц"} valueName={"Зарплата грн./мес."} periodNamesArray={months} typeData={"salary"} />
+                        <div id="chartdivSalary"></div>
+                    </div>
+                </div>
+                <div className="gdp-container">
+                    <h2>Внутренний валовый продукт в Украине за {this.state.year} год.</h2>
+                    <div className="gdp">
+                        <DataTable year={this.state.year} periodName={"Квартал"} valueName={"ВВП млн. грн./квт."} periodNamesArray={quarters} typeData={"gdp"} />
+                        <div id="chartdivGDP"></div>
                     </div>
                 </div>
             </div>
