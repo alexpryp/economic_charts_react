@@ -19,13 +19,13 @@ const gdp2018 = [705013, 810820, 994850, 1048023];
 const gdp2017 = [591008, 664760, 833130, 894022];
 
 
-function createDataArray (months, salary) {
+function createDataArray (periods, values, periodName, valueName) {
     let array = [];
 
-    for (let i = 0; i < months.length; i++) {
+    for (let i = 0; i < periods.length; i++) {
         let obj = {
-            "month": months[i],
-            "salary": salary[i]
+            [periodName]: periods[i],
+            [valueName]: values[i]
         };
 
         array.push(obj);
@@ -34,13 +34,49 @@ function createDataArray (months, salary) {
     return array;
 }
 
-let data = createDataArray(months, salar2017);
+let dataSalar = createDataArray(months, salar2017, "month", "salary");
 
+function DataTable(props) {
+    let table = [];
+    let row = "";
+    let salar = salar2017;
 
+    if (props.year === "2017") {
+        salar = salar2017;
+    } else if (props.year === "2018") {
+        salar = salar2018;
+    } else if (props.year === "2019") {
+        salar = salar2019;
+    }
+
+    let header = (
+        <tr key={"header"}>
+            <th>{props.periodName}</th>
+            <th>{props.valueName}</th>
+        </tr>
+    )
+
+    table.push(header);
+
+    for(let i = 0; i < 12; i++) {
+        row = (
+            <tr key={salar[i]}>
+                <td>{months[i]}</td>
+                <td>{salar[i]}</td>
+            </tr>
+        )
+
+        table.push(row);
+    }
+
+    dataSalar = createDataArray(months, salar, "month", "salary");
+
+    return <table><tbody>{table}</tbody></table>;
+}
 
 
 /* am4core.ready( */
-function buildChart(data) {
+function buildSalarChart(data) {
 
     // Themes begin
     am4core.useTheme(am4themes_dark);
@@ -96,44 +132,6 @@ function buildChart(data) {
 }
 /*     );  */
 
-function SalarTable(props) {
-    let table = [];
-    let row = "";
-    let salar = salar2017;
-
-    if (props.year === "2017") {
-        salar = salar2017;
-    } else if (props.year === "2018") {
-        salar = salar2018;
-    } else if (props.year === "2019") {
-        salar = salar2019;
-    }
-
-    let header = (
-        <tr key={"header"}>
-            <th>{"Месяц"}</th>
-            <th>{"Зарплата грн."}</th>
-        </tr>
-    )
-
-    table.push(header);
-
-    for(let i = 0; i < 12; i++) {
-        row = (
-            <tr key={salar[i]}>
-                <td>{months[i]}</td>
-                <td>{salar[i]}</td>
-            </tr>
-        )
-
-        table.push(row);
-    }
-
-    data = createDataArray(months, salar);
-
-    return <table><tbody>{table}</tbody></table>;
-}
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -149,34 +147,38 @@ class App extends React.Component {
             "year": e.target.dataset.year,
           });
         
+        const year2017Button = document.querySelector('.year2017');
+        const year2018Button = document.querySelector('.year2018');
+        const year2019Button = document.querySelector('.year2019');
+        const mainHeader = document.querySelector('h1');
+        
         if (e.target.classList.contains("year2017")) {
-            document.querySelector('.year2017').classList.add('year2017-active');
-            document.querySelector('.year2018').classList.remove('year2018-active');
-            document.querySelector('.year2019').classList.remove('year2019-active');
-            document.querySelector('h1').classList.remove('header-2018', 'header-2019');
-            document.querySelector('h1').classList.add('header-2017');
+            year2017Button.classList.add('year2017-active');
+            year2018Button.classList.remove('year2018-active');
+            year2019Button.classList.remove('year2019-active');
+            mainHeader.classList.remove('header-2018', 'header-2019');
+            mainHeader.classList.add('header-2017');
         } else if (e.target.classList.contains("year2018")) {
-            document.querySelector('.year2017').classList.remove('year2017-active');
-            document.querySelector('.year2018').classList.add('year2018-active');
-            document.querySelector('.year2019').classList.remove('year2019-active');
-            document.querySelector('h1').classList.remove('header-2017', 'header-2019');
-            document.querySelector('h1').classList.add('header-2018');
+            year2017Button.classList.remove('year2017-active');
+            year2018Button.classList.add('year2018-active');
+            year2019Button.classList.remove('year2019-active');
+            mainHeader.classList.remove('header-2017', 'header-2019');
+            mainHeader.classList.add('header-2018');
         } else if (e.target.classList.contains("year2019")) {
-            document.querySelector('.year2017').classList.remove('year2017-active');
-            document.querySelector('.year2018').classList.remove('year2018-active');
-            document.querySelector('.year2019').classList.add('year2019-active');
-            document.querySelector('h1').classList.remove('header-2017', 'header-2018');
-            document.querySelector('h1').classList.add('header-2019');
+            year2017Button.classList.remove('year2017-active');
+            year2018Button.classList.remove('year2018-active');
+            year2019Button.classList.add('year2019-active');
+            mainHeader.classList.remove('header-2017', 'header-2018');
+            mainHeader.classList.add('header-2019');
         }
-       console.dir(e.target);
     }
 
     componentDidMount() {
-        buildChart(data);
+        buildSalarChart(dataSalar);
     }
 
     componentDidUpdate() {
-        buildChart(data);
+        buildSalarChart(dataSalar);
     }
     
     render() {
@@ -194,7 +196,7 @@ class App extends React.Component {
                 <div className="average-salary-container">
                     <h2>Средняя зарплата в Украине за {this.state.year} год.</h2>
                     <div className="average-salary">
-                        <SalarTable year={this.state.year} />
+                        <DataTable year={this.state.year} periodName={"Месяц"} valueName={"Зарплата грн./мес."} />
                         <div id="chartdiv"></div>
                     </div>
                 </div>
