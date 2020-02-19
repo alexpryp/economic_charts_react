@@ -46,6 +46,7 @@ function createDataArray (periods, values, periodName, valueName) {
 let dataSalar = createDataArray(months, salar2017, "month", "salary");
 let dataGdp = createDataArray(quarters, gdp2017, "quarter", "value");
 let dataGdpStruct = createDataArray(gdpCategories, gdpStruct2017, "category", "value");
+let dataIpi = createDataArray(months, ipi2017, "month", "value");
 
 function DataTable(props) {
     let table = [];
@@ -53,19 +54,23 @@ function DataTable(props) {
     let salar = salar2017;
     let gdp = gdp2017;
     let gdpStruct = gdpStruct2017;
+    let ipi = ipi2017;
 
     if (props.year === "2017") {
         salar = salar2017;
         gdp = gdp2017;
         gdpStruct = gdpStruct2017;
+        ipi = ipi2017;
     } else if (props.year === "2018") {
         salar = salar2018;
         gdp = gdp2018;
         gdpStruct = gdpStruct2018;
+        ipi = ipi2018;
     } else if (props.year === "2019") {
         salar = salar2019;
         gdp = gdp2019;
         gdpStruct = gdpStruct2019;
+        ipi = ipi2019;
     }
 
     let header = (
@@ -109,6 +114,17 @@ function DataTable(props) {
                 <tr key={gdpStruct[i]}>
                     <td>{gdpCategories[i]}</td>
                     <td>{gdpStruct[i]}</td>
+                </tr>
+            );
+
+            table.push(row);
+        }
+    } else if (props.typeData === "ipi") {
+        for (let i = 0; i < 12; i++) {
+            row = (
+                <tr key={ipi[i]}>
+                    <td>{months[i]}</td>
+                    <td>{ipi[i]}</td>
                 </tr>
             );
 
@@ -329,6 +345,12 @@ class App extends React.Component {
                     <div className="gdp-struct">
                         <DataTable year={this.state.year} periodName={"Категория"} valueName={"% от валового ВВП"} periodNamesArray={gdpCategories} typeData={"gdpStruct"} />
                         <div id="chartdivGDPStruct"></div>
+                    </div>
+                </div>
+                <div className="ipi-container">
+                    <h2>Индекс промышленного производства в Украине за {this.state.year} год.</h2>
+                    <div className="ipi">
+                        <DataTable year={this.state.year} periodName={"Месяц"} valueName={"% относительно предыдущего месяца"} periodNamesArray={months} typeData={"ipi"} />
                     </div>
                 </div>
             </div>
