@@ -8,15 +8,24 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_dark from "@amcharts/amcharts4/themes/dark";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
-
+//data
 const months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
 const quarters = ["I кв.", "II кв.", "III кв.", "IV кв."];
+const gdpCategories = ["Услуги", "Добывающая промышленность", "Перерабатывающая промышленность", "Сельское, лесное, рыбное хозяйства", "Торговля", "Налоги"];
 const salar2019 = [9223, 9429, 10237, 10269, 10239, 10783, 10971, 10537, 10687, 10727, 10679, 12264];
 const salar2018 = [7711, 7828, 8382, 8480, 8725, 9141, 9170, 8977, 9042, 9218, 9161, 10573];
 const salar2017 = [6008, 6209, 6752, 6659, 6840, 7360, 7339, 7114, 7351, 7377, 7479, 8777];
 const gdp2019 = [807755, 927773, 1105520, 1176822];
 const gdp2018 = [705013, 810820, 994850, 1048023];
 const gdp2017 = [591008, 664760, 833130, 894022];
+const gdpStruct2019 = [51.36, 4.43, 10.07, 10.12, 13.15, 10.88];
+const gdpStruct2018 = [50.66, 4.46, 10.48, 10.86, 12.81, 10.73];
+const gdpStruct2017 = [50.67, 4.53, 10.79, 10.44, 12.80, 10.77];
+const ipi2019 = [86.2, 98.1, 112.0, 98.2, 99.5, 96.3, 103.6, 98.6, 101.7, 105.6, 95.4, 98.3];
+const ipi2018 = [86.1, 96.5, 107.6, 95.0, 103.1, 100.2, 101.4, 99.5, 101.7, 110.0, 97.9, 98.3];
+const ipi2017 = [82.5, 97.8, 108.9, 93.1, 103.4, 100.1, 100.3, 103.0, 102.5, 106.9, 100.3, 101.0];
+
+
 
 
 function createDataArray (periods, values, periodName, valueName) {
@@ -36,22 +45,27 @@ function createDataArray (periods, values, periodName, valueName) {
 
 let dataSalar = createDataArray(months, salar2017, "month", "salary");
 let dataGdp = createDataArray(quarters, gdp2017, "quarter", "value");
+let dataGdpStruct = createDataArray(gdpCategories, gdpStruct2017, "category", "value");
 
 function DataTable(props) {
     let table = [];
     let row = "";
     let salar = salar2017;
     let gdp = gdp2017;
+    let gdpStruct = gdpStruct2017;
 
     if (props.year === "2017") {
         salar = salar2017;
         gdp = gdp2017;
+        gdpStruct = gdpStruct2017;
     } else if (props.year === "2018") {
         salar = salar2018;
         gdp = gdp2018;
+        gdpStruct = gdpStruct2018;
     } else if (props.year === "2019") {
         salar = salar2019;
         gdp = gdp2019;
+        gdpStruct = gdpStruct2019;
     }
 
     let header = (
@@ -59,7 +73,7 @@ function DataTable(props) {
             <th>{props.periodName}</th>
             <th>{props.valueName}</th>
         </tr>
-    )
+    );
 
     table.push(header);
 
@@ -89,6 +103,17 @@ function DataTable(props) {
         }
 
         dataGdp = createDataArray(quarters, gdp, "quarter", "value");
+    } else if (props.typeData === "gdpStruct") {
+        for (let i = 0; i < 6; i++) {
+            row = (
+                <tr key={gdpStruct[i]}>
+                    <td>{gdpCategories[i]}</td>
+                    <td>{gdpStruct[i]}</td>
+                </tr>
+            );
+
+            table.push(row);
+        }
     }
 
     return <table><tbody>{table}</tbody></table>;
@@ -150,10 +175,6 @@ function buildSalarChart(data) {
     chart.cursor.lineY.strokeOpacity = 0;
 }
 
-
-
-
-
 function buildGDPChart(data) {
 
     // Themes begin
@@ -194,7 +215,31 @@ function buildGDPChart(data) {
     
 };
 
+function buildGDPStructChart(data) {
 
+    // Themes begin
+    am4core.useTheme(am4themes_dark);
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("chartdivGDPStruct", am4charts.PieChart3D);
+    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+    chart.data = data;
+
+    chart.innerRadius = am4core.percent(40);
+    chart.depth = 120;
+
+    chart.legend = new am4charts.Legend();
+
+    var series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "value";
+    series.dataFields.depthValue = "value";
+    series.dataFields.category = "category";
+    series.slices.template.cornerRadius = 5;
+    series.colors.step = 3;
+
+}
 
 
 
@@ -244,11 +289,13 @@ class App extends React.Component {
     componentDidMount() {
         buildSalarChart(dataSalar);
         buildGDPChart(dataGdp);
+        buildGDPStructChart(dataGdpStruct);
     }
 
     componentDidUpdate() {
         buildSalarChart(dataSalar);
         buildGDPChart(dataGdp);
+        buildGDPStructChart(dataGdpStruct);
     }
     
     render() {
@@ -277,12 +324,16 @@ class App extends React.Component {
                         <div id="chartdivGDP"></div>
                     </div>
                 </div>
+                <div className="gdp-struct-container">
+                    <h2>Структура внутреннего валового продукта в Украине за {this.state.year} год.</h2>
+                    <div className="gdp-struct">
+                        <DataTable year={this.state.year} periodName={"Категория"} valueName={"% от валового ВВП"} periodNamesArray={gdpCategories} typeData={"gdpStruct"} />
+                        <div id="chartdivGDPStruct"></div>
+                    </div>
+                </div>
             </div>
         );
     }
 }
-
-
-
 
 ReactDOM.render(<App />, document.getElementById('root'));
