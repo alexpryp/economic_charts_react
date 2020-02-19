@@ -21,9 +21,12 @@ const gdp2017 = [591008, 664760, 833130, 894022];
 const gdpStruct2019 = [51.36, 4.43, 10.07, 10.12, 13.15, 10.88];
 const gdpStruct2018 = [50.66, 4.46, 10.48, 10.86, 12.81, 10.73];
 const gdpStruct2017 = [50.67, 4.53, 10.79, 10.44, 12.80, 10.77];
-const ipi2019 = [86.2, 98.1, 112.0, 98.2, 99.5, 96.3, 103.6, 98.6, 101.7, 105.6, 95.4, 98.3];
+/* const ipi2019 = [86.2, 98.1, 112.0, 98.2, 99.5, 96.3, 103.6, 98.6, 101.7, 105.6, 95.4, 98.3];
 const ipi2018 = [86.1, 96.5, 107.6, 95.0, 103.1, 100.2, 101.4, 99.5, 101.7, 110.0, 97.9, 98.3];
-const ipi2017 = [82.5, 97.8, 108.9, 93.1, 103.4, 100.1, 100.3, 103.0, 102.5, 106.9, 100.3, 101.0];
+const ipi2017 = [82.5, 97.8, 108.9, 93.1, 103.4, 100.1, 100.3, 103.0, 102.5, 106.9, 100.3, 101.0]; */
+const ipi2019 = [-13.8, -1.9, 12.0, -1.8, -0.5, -3.7, 3.6, -1.4, 1.7, 5.6, -4.6, -1.7];
+const ipi2018 = [-13.9, -3.5, 7.6, -5.0, 3.1, 0.2, 1.4, -0.5, 1.7, 10.0, -2.1, -1.7];
+const ipi2017 = [-17.5, -2.2, 8.9, -6.9, 3.4, 0.1, 0.3, 3.0, 2.5, 6.9, 0.3, 1.0];
 
 
 
@@ -119,10 +122,12 @@ function DataTable(props) {
 
             table.push(row);
         }
+
+        dataGdpStruct = createDataArray(gdpCategories, gdpStruct, "category", "value");
     } else if (props.typeData === "ipi") {
         for (let i = 0; i < 12; i++) {
             row = (
-                <tr key={ipi[i]}>
+                <tr key={months[i]}>
                     <td>{months[i]}</td>
                     <td>{ipi[i]}</td>
                 </tr>
@@ -130,6 +135,8 @@ function DataTable(props) {
 
             table.push(row);
         }
+
+        dataIpi = createDataArray(months, ipi, "month", "value");
     }
 
     return <table><tbody>{table}</tbody></table>;
@@ -216,7 +223,8 @@ function buildGDPChart(data) {
     categoryAxis.numberFormatter.numberFormat = "#";
     categoryAxis.renderer.inversed = true;
     
-    var  valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+    var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+    
     valueAxis.title.text = "ВВП млн. грн./квартал";
     
     // Create series
@@ -257,7 +265,48 @@ function buildGDPStructChart(data) {
 
 }
 
+function buildIPIChart(data) {
 
+    // Themes begin
+    am4core.useTheme(am4themes_dark);
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("chartdivIPI", am4charts.XYChart);
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    chart.data = data;
+
+    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.dataFields.category = "month";
+    categoryAxis.renderer.minGridDistance = 40;
+
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.title.text = "% относительно предыдущего месяца";
+
+    var series = chart.series.push(new am4charts.CurvedColumnSeries());
+    series.dataFields.categoryX = "month";
+    series.dataFields.valueY = "value";
+    series.tooltipText = "{valueY.value}"
+    series.columns.template.strokeOpacity = 0;
+
+    series.columns.template.fillOpacity = 0.75;
+
+    var hoverState = series.columns.template.states.create("hover");
+    hoverState.properties.fillOpacity = 1;
+    hoverState.properties.tension = 0.4;
+
+    chart.cursor = new am4charts.XYCursor();
+
+    // Add distinctive colors for each column using adapter
+    series.columns.template.adapter.add("fill", function(fill, target) {
+    return chart.colors.getIndex(target.dataItem.index);
+    });
+
+    chart.scrollbarX = new am4core.Scrollbar();
+
+}
 
 
 
@@ -306,12 +355,14 @@ class App extends React.Component {
         buildSalarChart(dataSalar);
         buildGDPChart(dataGdp);
         buildGDPStructChart(dataGdpStruct);
+        buildIPIChart(dataIpi);
     }
 
     componentDidUpdate() {
         buildSalarChart(dataSalar);
         buildGDPChart(dataGdp);
         buildGDPStructChart(dataGdpStruct);
+        buildIPIChart(dataIpi);
     }
     
     render() {
@@ -333,13 +384,7 @@ class App extends React.Component {
                         <div id="chartdivSalary"></div>
                     </div>
                 </div>
-                <div className="gdp-container">
-                    <h2>Внутренний валовый продукт в Украине за {this.state.year} год.</h2>
-                    <div className="gdp">
-                        <DataTable year={this.state.year} periodName={"Квартал"} valueName={"ВВП млн. грн./квт."} periodNamesArray={quarters} typeData={"gdp"} />
-                        <div id="chartdivGDP"></div>
-                    </div>
-                </div>
+                
                 <div className="gdp-struct-container">
                     <h2>Структура внутреннего валового продукта в Украине за {this.state.year} год.</h2>
                     <div className="gdp-struct">
@@ -351,6 +396,14 @@ class App extends React.Component {
                     <h2>Индекс промышленного производства в Украине за {this.state.year} год.</h2>
                     <div className="ipi">
                         <DataTable year={this.state.year} periodName={"Месяц"} valueName={"% относительно предыдущего месяца"} periodNamesArray={months} typeData={"ipi"} />
+                        <div id="chartdivIPI"></div>
+                    </div>
+                </div>
+                <div className="gdp-container">
+                    <h2>Внутренний валовый продукт в Украине за {this.state.year} год.</h2>
+                    <div className="gdp">
+                        <DataTable year={this.state.year} periodName={"Квартал"} valueName={"ВВП млн. грн./квт."} periodNamesArray={quarters} typeData={"gdp"} />
+                        <div id="chartdivGDP"></div>
                     </div>
                 </div>
             </div>

@@ -43,13 +43,13 @@ h2 {
   color: #f2ff3c;
 }
 
-#chartdivSalary, #chartdivGDP  {
+#chartdivSalary, #chartdivGDP {
   height: 500px;
-  width: 700px;
+  width: 1500px;
 }
-#chartdivGDPStruct {
+#chartdivGDPStruct, #chartdivIPI {
   height: 500px;
-  width: 1000px; 
+  width: 1500px; 
 }
 .year-buttons {
   display: flex;
@@ -102,10 +102,12 @@ h2 {
   box-shadow: 0 0 10px #0051ff, 0 0 40px #0051ff, 0 0 80px #0051ff;
 }
 
-.average-salary-container, .gdp-container, .gdp-struct-container {
+.average-salary-container, .gdp-container, .gdp-struct-container, .ipi-container {
   margin: 30px 20px;
+  padding: 10px;
+  border: 1px solid #555;
 }
-.average-salary, .gdp, .gdp-struct {
+.average-salary, .gdp, .gdp-struct, .ipi {
   display: flex;
   justify-content: center;
 }
