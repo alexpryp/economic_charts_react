@@ -1,4 +1,4 @@
-Tic Tac Toe Game
+Economic charts react
 ========================================================
 
 ![screenshot of sample](Sample.jpg)
@@ -22,6 +22,7 @@ To set up a development environment in a cloned project:
 
     <b>npm i<b>
 
+***
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
