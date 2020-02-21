@@ -1,3 +1,28 @@
+Tic Tac Toe Game
+========================================================
+
+![screenshot of sample](Sample.jpg)
+
+This application was developed using React and Amcharts libraries.
+***
+The following technologies were used in the development:
+* HTML5
+* CSS3, Flexbox
+* JavaScript, React, Amcharts
+* Node.js
+* Create React App
+* Git
+
+***
+You can fork and clone the project.
+To set up a development environment in a cloned project:
+1. You must have a Node.js installed;
+2. In the console, go to the folder calculator_react;
+3. Enter this instruction in the console to install all the dependencies and the Create React App:
+
+    <b>npm i<b>
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -11,11 +36,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
@@ -47,22 +67,3 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
 
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
