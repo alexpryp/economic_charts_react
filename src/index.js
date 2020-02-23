@@ -205,6 +205,8 @@ function buildSalarChart(data) {
     chart.cursor = new am4charts.XYCursor();
     chart.cursor.lineX.strokeOpacity = 0;
     chart.cursor.lineY.strokeOpacity = 0;
+
+    return chart;
 }
 
 function buildGDPChart(data) {
@@ -380,7 +382,7 @@ class App extends React.Component {
             <div>
                 <header>
                     <h1 className="header-2017">Средняя зарплата и ВВП в Украине</h1>
-                    <h2>Выберите год</h2>
+                    <h2>Выберите год:</h2>
                     <div className="year-buttons">
                         <div className="year-button year2017 year2017-active" data-year="2017" onClick={this.changeYear}>2017</div>
                         <div className="year-button year2018" data-year="2018" onClick={this.changeYear}>2018</div>
@@ -388,7 +390,7 @@ class App extends React.Component {
                     </div>
                 </header>
                 <div className="average-salary-container">
-                    <h2>Средняя зарплата в Украине за {this.state.year} год.</h2>
+                    <h2>Средняя зарплата в Украине за {this.state.year} год</h2>
                     <div className="average-salary">
                         <DataTable year={this.state.year} periodName={"Месяц"} valueName={"Зарплата грн./мес."} periodNamesArray={months} typeData={"salary"} />
                         <div id="chartdivSalary"></div>
@@ -396,14 +398,14 @@ class App extends React.Component {
                 </div>
                 
                 <div className="gdp-struct-container">
-                    <h2>Структура внутреннего валового продукта в Украине за {this.state.year} год.</h2>
+                    <h2>Структура внутреннего валового продукта в Украине за {this.state.year} год</h2>
                     <div className="gdp-struct">
                         <DataTable year={this.state.year} periodName={"Категория"} valueName={"% от валового ВВП"} periodNamesArray={gdpCategories} typeData={"gdpStruct"} />
                         <div id="chartdivGDPStruct"></div>
                     </div>
                 </div>
                 <div className="ipi-container">
-                    <h2>Индекс промышленного производства в Украине за {this.state.year} год.</h2>
+                    <h2>Индекс промышленного производства в Украине за {this.state.year} год</h2>
                     <div className="ipi">
                         <DataTable year={this.state.year} periodName={"Месяц"} valueName={"% относительно предыдущего месяца"} periodNamesArray={months} typeData={"ipi"} />
                         <div id="chartdivIPI"></div>

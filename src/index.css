@@ -5,8 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* background-color: #30303d; */
-  background-color: #222; 
+  background: linear-gradient(90deg, rgba(0,173,81,1) 0%, rgba(5,111,175,1) 50%, rgba(0,212,255,1) 100%);
   color: #fff;
   font-size: 13px;
 }
@@ -21,26 +20,24 @@ h1, h2 {
 }
 h1 {
   color: #00ff00;
-  background-color: #000;
   margin: 0px;
-  padding: 15px;
+  padding: 10px;
+}
+header {
+  margin: 0px 20px; 
+  background: rgba(0, 0, 0, 0.6 );
 }
 .header-2017 {
-  box-shadow: 0 0 10px #ff0000, 0 0 40px #ff0000, 0 0 80px #ff0000;
   color: #ff0000;
-  background-color: #000;
 }
 .header-2018 {
-  box-shadow: 0 0 10px #00ff00, 0 0 40px #00ff00, 0 0 80px #00ff00;
   color: #00ff00;
-  background-color:  #000;
 }
 .header-2019 {
-  box-shadow: 0 0 10px #0051ff, 0 0 40px #0051ff, 0 0 80px #0051ff;
   color: #0051ff;
-  background-color:  #000;
 }
 h2 {
+  margin: 10px;
   color: #f2ff3c;
 }
 
@@ -54,10 +51,9 @@ h2 {
   display: flex;
   padding: 10px 0px 20px 0px;
   justify-content: center;
-  border-bottom: 1px solid #555;
 }
 .year-button {
-  padding: 10px 20px;
+  padding: 5px 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-decoration: none;
@@ -102,13 +98,13 @@ h2 {
 }
 
 .average-salary-container, .gdp-container, .gdp-struct-container, .ipi-container {
-  margin: 30px 20px;
-  padding: 10px;
-  border: 1px solid #555;
+  margin: 10px 20px;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.5 );
 }
 .average-salary, .gdp, .gdp-struct, .ipi {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
 }
 
@@ -118,10 +114,10 @@ table {
   margin-right: 20px;
 }
 table, th, td {
-  border: 1px solid #555;
+  border: 1px solid #aaa;
 }
 th {
-  background-color: #444;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 th, td {
   padding: 5px;
@@ -131,8 +127,11 @@ td:nth-child(2) {
 }
 
 @media screen and (max-width: 900px) {
+  header {
+    margin: 0px; 
+  }
   .average-salary-container, .gdp-container, .gdp-struct-container, .ipi-container {
-    margin: 30px 0px;
+    margin: 10px 0px;
   }
   .average-salary, .gdp, .gdp-struct, .ipi {
     flex-wrap: wrap;
